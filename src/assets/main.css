@@ -1,0 +1,58 @@
+body{
+  background-color:#0d1117;
+}
+.cabecera{
+  justify-content: center;
+}
+.title-page {
+  font-size: 3em;
+  font-family: 'Roboto';
+  color: var(--bs-gray);
+  transition: all 0.25s;
+}
+
+a.nav-link.active.title-page:active,
+a.nav-link.active.title-page:hover,
+a.nav-link.active.title-page:focus{
+  color: var(--bs-info)!important;
+  text-shadow: 1px 1px 2px black;
+}
+
+td > a{
+  color: aliceblue;
+  transition: all 0.25s;
+}
+
+td > a:hover,
+td > a:focus,
+td > a:active{
+  color: darkorange;
+}
+
+tr{
+  transition: all 0.25s;
+}
+
+thead tr{
+  color: aliceblue;
+  background-color: #42424a;
+  cursor: default;
+}
+
+tbody tr:hover{
+  background-color: #000;
+}
+
+.txt-topic{
+  border-radius: 0;
+  transition: all 0.2s;
+}
+
+.txt-topic:focus{
+  border-bottom: #00ceff 2px solid;
+}
+
+/* color cabecera */
+header{
+  background-color: #161b22;
+}
