@@ -1,20 +1,20 @@
 const APIKEY = import.meta.env.VITE_APIKEY;
 const Busquedas = () => {
-    const githubGraphiQL = async (txt) => {
-        console.log('githubGraphiQL',txt);
+    const githubGraphiQL = async (data) => {
+        console.log('githubGraphiQL',data);
 
         const consultaGraphiQL = `{
             search(
               type: REPOSITORY
               query: """
-              topic:${txt}
-              stars:>10
+              topic:${data.txt}
+              stars:>${data.stars}
               forks:>3
               size:>2000
               pushed:>=2020-01-01
                   sort:stars-desc
               """
-              last: 50
+              last: 10
             ) {
               repos: edges {
                 repo: node {
@@ -42,14 +42,14 @@ const Busquedas = () => {
             }
           }`;
 
-
+        const withoutLineBreaks = consultaGraphiQL.replace(/[\r\n]/gm, '');
         const options = {
             method: 'POST',
             headers: {
               Authorization: 'bearer '+APIKEY,
               'Content-Type': 'application/json'
             },
-            body: JSON.stringify({"query":consultaGraphiQL})
+            body: JSON.stringify({ query: withoutLineBreaks })
           };
           
           const response = await fetch('https://api.github.com/graphql', options)

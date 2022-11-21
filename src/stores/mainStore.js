@@ -3,6 +3,7 @@ import { defineStore } from "pinia";
 export const useMainStore = defineStore("mainStore", () => {
   const resultados = reactive({ results: [] });
   const isLondaing = ref(false);
+  const minStars = ref(1000);
 
   function showLoader() {
     isLondaing.value = true;
@@ -16,5 +17,9 @@ export const useMainStore = defineStore("mainStore", () => {
     resultados.results = results;
   };
 
-  return { resultados, updateResultados, isLondaing, showLoader, hideLoader };
+  const changeStarsMin = (stars) => {
+    minStars.value = stars;
+  };
+
+  return { resultados,minStars,isLondaing, updateResultados, showLoader, hideLoader,changeStarsMin };
 });

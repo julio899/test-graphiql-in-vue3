@@ -6,11 +6,22 @@
       <div class="col-md-10">
         <label class="header-search-wrapper">
           <input 
+              id="input-topic"
               type="text"
               v-model="texto" 
               class="input-git" 
               placeholder="Ingrese el Topico a buscar..."
               v-on:input="searchData">
+
+              <label for="input-stars">⭐</label>
+              <input 
+                id="input-stars" 
+                class="input-git" 
+                type="number" 
+                min="1" 
+                v-on:input="updateMinStars" 
+                v-model="minStars"
+                placeholder="Stars Min" >
         </label>
       </div>
 
@@ -67,6 +78,7 @@ export default {
   setup() {
     const texto = ref("");
     const store = useMainStore();
+    const minStars = ref(parseInt(store.minStars));
 
     const reset = ()=>{ texto.value=''; store.updateResultados([]); };
 
@@ -86,7 +98,7 @@ export default {
       store.showLoader();
 
       // llamamos al composable donde se encuentra la loguca del request
-      const response = await githubGraphiQL(txt);
+      const response = await githubGraphiQL({txt,stars:parseInt(minStars.value)});
 
       // actualizamos el store de pinia con la actualizacion de data
       // para que se encuentren disponible desde cualquier vista
@@ -100,7 +112,12 @@ export default {
       return (a > 1 ) ? a.toFixed(1)+'k': amount;
     };
 
-    return { texto, searchData, store, formatAmount,reset };
+    const updateMinStars = debounce((v) => {
+      store.changeStarsMin( parseInt(minStars.value) );
+      searchData();
+    },1000)
+
+    return { texto, searchData, store, minStars, updateMinStars, formatAmount,reset };
   },
 };
 // import { RouterLink, RouterView } from "vue-router";
@@ -116,7 +133,7 @@ export default {
   }
   .input-git{
     display: table-cell;
-    width: 100%;
+    /* width: 100%; */
     height: 40px;
     padding-top: 0;
     padding-bottom: 0;
@@ -128,6 +145,11 @@ export default {
     border-style: inset;
     border-color: rgb(133, 133, 133);
     padding-left: 1em;
+    margin: auto 10px;
+  }
+  #input-stars{
+    width: 100px;
+    text-align: center;
   }
   .container-input-git{
     display: table;
