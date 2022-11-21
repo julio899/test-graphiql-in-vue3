@@ -14,7 +14,7 @@ const Busquedas = () => {
               pushed:>=2020-01-01
                   sort:stars-desc
               """
-              last: 10
+              last: ${data.top}
             ) {
               repos: edges {
                 repo: node {

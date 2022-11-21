@@ -22,6 +22,15 @@
                 v-on:input="updateMinStars" 
                 v-model="minStars"
                 placeholder="Stars Min" >
+
+                <div class="caja">
+                  <select v-model="top" @change="searchData">
+                    <option value="10">TOP 10</option>
+                    <option value="50">TOP 50</option>
+                    <option value="100">TOP 100</option>
+                  </select>
+                </div>
+
         </label>
       </div>
 
@@ -79,6 +88,7 @@ export default {
     const texto = ref("");
     const store = useMainStore();
     const minStars = ref(parseInt(store.minStars));
+    const top = ref(10);// por defecto el top 10
 
     const reset = ()=>{ texto.value=''; store.updateResultados([]); };
 
@@ -98,7 +108,7 @@ export default {
       store.showLoader();
 
       // llamamos al composable donde se encuentra la loguca del request
-      const response = await githubGraphiQL({txt,stars:parseInt(minStars.value)});
+      const response = await githubGraphiQL({ txt, stars:parseInt(minStars.value), top:top.value});
 
       // actualizamos el store de pinia con la actualizacion de data
       // para que se encuentren disponible desde cualquier vista
@@ -107,6 +117,7 @@ export default {
       store.hideLoader();
     }, 1000);
 
+    // formateamos la cantidad a miles para que sea expresado como en Github (100k, 50k) etc
     const formatAmount = (amount)=>{
       const a = parseFloat(parseFloat(parseFloat(amount).toFixed(1)) /1000);
       return (a > 1 ) ? a.toFixed(1)+'k': amount;
@@ -117,11 +128,9 @@ export default {
       searchData();
     },1000)
 
-    return { texto, searchData, store, minStars, updateMinStars, formatAmount,reset };
+    return { texto, searchData, store, minStars, updateMinStars, top, formatAmount,reset };
   },
 };
-// import { RouterLink, RouterView } from "vue-router";
-// import HelloWorld from "./components/HelloWorld.vue";
 </script>
 
 <style scoped>
@@ -180,6 +189,40 @@ table thead tr{
     white-space: nowrap;
     border-color: rgb(47 53 60 / 33%);
     border-style: dotted;
+}
+
+.caja {
+    border: 1px solid #f0f2f533;
+    overflow: hidden;
+    width: 230px;
+    position: relative;
+    display: inline-flex;
+    background-color: #d9d9d900;
+    border-radius: 5px;
+}
+select {
+   background: transparent;
+   border: none;
+   font-size: 14px;
+   height: 35px;
+   padding: 5px;
+   width: 250px;    
+   color: inherit;
+}
+select:focus{ outline: none;}
+
+.caja::after{
+	content:"\025be";
+	display:table-cell;
+	padding-top:7px;
+	text-align:center;
+	width:30px;
+	height:35px;
+	background-color:#d9d9d9;
+	position:absolute;
+	top:0;
+	right:0px;	
+	pointer-events: none;
 }
 
   /*Estilos del scroll para el contenedor de la tabla */
